@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Bible text preview",
+  "version": "1.0",
+  "description": "Розширення для зчитування форматованого тексту з буфера обміну та відображення на новій сторінці з можливістю показу наявних в тексті посилань на біблію при наведенні курсора на відповідне посилання.",
+  "permissions": [
+    "clipboardRead",
+    "storage",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "web_accessible_resources": [{
+    "resources": ["htmlPage.html", "htmlPage.js", "textPage.html", "textPage.js", "bibleText.json"],
+    "matches": ["<all_urls>"]
+  }]
+}

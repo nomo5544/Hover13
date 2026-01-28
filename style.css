@@ -1,0 +1,37 @@
+* {
+    box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.doc-container {
+    width: 795px;
+    margin: 48px auto;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 46px 96px;
+    font-family: 'Times New Roman', serif;
+    font-size: 11pt;
+    line-height: 1.15;
+    transform-origin: top; /* Додаємо точку масштабування */
+    transform: scale(1.7); /* Додаємо початковий масштаб */
+}
+
+#content {
+    white-space: pre-wrap;
+}
+.tooltip {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: 40px; /* Змінено розмір шрифта */
+    z-index: 1000;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
