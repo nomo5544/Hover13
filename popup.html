@@ -5,22 +5,78 @@
     <meta charset="UTF-8">
     <style>
         body {
-            width: 100px;
-            padding: 10px;
+            width: 300px;
+            padding: 20px;
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
-        #openTextButton {
-            padding: 10px;
+        #getSelectedButton {
+            padding: 12px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 15px;
+            border-radius: 8px;
             cursor: pointer;
             width: 100%;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        #getSelectedButton:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #openTextButton {
+            padding: 12px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        #openTextButton:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #status {
+            font-size: 11px;
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+            min-height: 16px;
+        }
+        .hint {
+            font-size: 11px;
+            color: #666;
+            margin-top: 15px;
+            line-height: 1.4;
+            text-align: center;
+        }
+        .info {
+            font-size: 10px;
+            color: #999;
+            margin-top: 10px;
+            text-align: center;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <button id="openTextButton">PASTE</button>
+    <button id="getSelectedButton">Отримати виділений текст</button>
+    <button id="openTextButton">Відкрити сторінку з посиланнями</button>
+    <div id="status"></div>
+    <div class="hint">
+        <strong>Як використовувати:</strong><br>
+        1. Виділіть текст на сторінці<br>
+        2. Натисніть "Отримати виділений текст"<br>
+        3. Натисніть "Відкрити сторінку"
+    </div>
+    <div class="info">
+        Наведіть курсор на біблійні посилання на будь-якій сторінці, щоб побачити текст вірша
+    </div>
     <script src="popup.js"></script>
 </body>
 </html>

@@ -4,9 +4,16 @@
   "version": "1.0",
   "description": "Розширення для зчитування форматованого тексту з буфера обміну та відображення на новій сторінці з можливістю показу наявних в тексті посилань на біблію при наведенні курсора на відповідне посилання.",
   "permissions": [
-    "clipboardRead",
     "storage",
-    "tabs"
+    "tabs",
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
   ],
   "background": {
     "service_worker": "background.js"

@@ -7,10 +7,14 @@ body, html {
     padding: 0;
     height: 100vh;
     background-color: #f8f9fa;
+    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
 }
 
 .doc-container {
-    width: 795px;
+    width: 100%;
+    max-width: calc(100vw / 1.7);
     margin: 48px auto;
     background-color: white;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -18,20 +22,136 @@ body, html {
     font-family: 'Times New Roman', serif;
     font-size: 11pt;
     line-height: 1.15;
-    transform-origin: top; /* Додаємо точку масштабування */
-    transform: scale(1.7); /* Додаємо початковий масштаб */
+    transform-origin: top;
+    transform: scale(1.7);
+    overflow-x: visible;
+    box-sizing: border-box;
+    position: relative;
+    min-width: 0;
+}
+
+@media (max-width: 1400px) {
+    .doc-container {
+        max-width: calc(100vw / 1.7);
+        padding: 46px 60px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .doc-container {
+        padding: 46px 30px;
+    }
+}
+
+@media (max-width: 800px) {
+    .doc-container {
+        padding: 46px 20px;
+    }
+}
+
+#textcontent {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+#textcontent > * {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+#textcontent p,
+#textcontent div:not(.verse-text-container),
+#textcontent span {
+    max-width: 100%;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    box-sizing: border-box;
 }
 
 #content {
     white-space: pre-wrap;
 }
+
+.bible-link {
+    color: #0066cc;
+    text-decoration: underline;
+    cursor: pointer;
+    position: relative;
+}
+
 .tooltip {
-    position: absolute;
+    position: fixed;
     background-color: white;
     border: 1px solid #ccc;
-    padding: 8px;
-    font-size: 40px; /* Змінено розмір шрифта */
-    z-index: 1000;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 12px 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    z-index: 10000;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
+    max-width: 500px;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.verse-text-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 100%;
+    width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    min-width: 0;
+    contain: layout style;
+}
+
+.verse-text-container > * {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+/* Обмежуємо всі елементи всередині textcontent */
+#textcontent {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+#textcontent > * {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    contain: layout;
 }
