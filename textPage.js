@@ -197,7 +197,7 @@ function getVerseText(reference) {
     
     // Спочатку перевіряємо точне збігання
     if (bibleData[normalizedRef]) {
-        return normalizedRef + '\n' + bibleData[normalizedRef];
+        return normalizedRef + ' ' + bibleData[normalizedRef];
     }
     
     // Обробляємо діапазони (наприклад, "Буття 1:3-5")
@@ -208,7 +208,7 @@ function getVerseText(reference) {
         for (let v = parseInt(startVerse); v <= parseInt(endVerse); v++) {
             const verseText = findVerseTextSimple(book, chapter, v);
             if (verseText) {
-                verses.push(`${book} ${chapter}:${v}\n${verseText}`);
+                verses.push(`${book} ${chapter}:${v} ` + verseText);
             }
         }
         if (verses.length > 0) {
@@ -216,7 +216,7 @@ function getVerseText(reference) {
         }
     }
     
-    // Якщо це один вірш, спробуємо знайти наступні вірші в тому ж розділі
+    // Якщо це один вірш, показуємо тільки його
     const singleMatch = normalizedRef.match(/^(.+?)\s+(\d+):(\d+)$/);
     if (singleMatch) {
         const [, book, chapter, verse] = singleMatch;
@@ -226,25 +226,8 @@ function getVerseText(reference) {
         let verseText = findVerseTextSimple(book, chapter, verseNum);
         
         if (verseText) {
-            // Показуємо поточний вірш та наступні (до 5 віршів загалом)
-            const verses = [`${book} ${chapter}:${verse}\n${verseText}`];
-            let nextVerse = verseNum + 1;
-            let count = 0;
-            
-            // Додаємо наступні вірші, якщо вони є (максимум 4 додаткові)
-            while (count < 4 && nextVerse <= 200) {
-                const nextVerseText = findVerseTextSimple(book, chapter, nextVerse);
-                if (nextVerseText) {
-                    verses.push(`${book} ${chapter}:${nextVerse}\n${nextVerseText}`);
-                    count++;
-                    nextVerse++;
-                } else {
-                    // Якщо наступного вірша немає, зупиняємося
-                    break;
-                }
-            }
-            
-            return verses.join('\n\n');
+            // Показуємо посилання на початку, потім текст
+            return `${book} ${chapter}:${verse} ` + verseText;
         }
     }
     

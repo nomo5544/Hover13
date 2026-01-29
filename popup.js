@@ -135,19 +135,22 @@ function processHtml(html) {
     setStatus("Обробка посилань...");
     
     // Простий regex для розпізнавання біблійних посилань
-    // Захоплює "1 Петра", "2 Тимофія" тощо
-    const bibleRegex = /(\d+\s+)?([А-Яа-яІЇЄҐ][А-Яа-яІЇЄҐіїєґ'\s]{1,25}?)(?:\s*[\.\:]\s*|\s+)(\d+)(?:[\.\:](\d+(?:[\-\–]\d+)?))?/g;
+    // Захоплює "1 Петра", "2 Тимофія", "1Кор", "2Кор" тощо
+    const bibleRegex = /(\d+\s*)?([А-Яа-яІЇЄҐ][А-Яа-яІЇЄҐіїєґ'\s]{1,25}?)(?:\s*[\.\:]\s*|\s+)(\d+)(?:[\.\:](\d+(?:[\-\–]\d+)?))?/g;
     
     let modifiedHtml = html.replace(bibleRegex, function (match, numberPrefix, bookPart, chapter, verse) {
         const trimmedBookPart = (bookPart || '').trim();
         if (!trimmedBookPart || trimmedBookPart.length < 2) return match;
         
-        // Якщо є числовий префікс (наприклад, "1 " перед "Петра"), додаємо його до назви книги
+        // Якщо є числовий префікс (наприклад, "1 " або "1" перед "Петра" або "Кор")
         const numberPart = numberPrefix ? numberPrefix.trim() : '';
-        const fullBookPart = numberPart ? (numberPart + ' ' + trimmedBookPart) : trimmedBookPart;
         
-        // Перевіряємо мапу скорочень
-        let fullBookName = bookNameMap[fullBookPart] || bookNameMap[trimmedBookPart] || fullBookPart;
+        // Формуємо повну назву: спочатку перевіряємо варіант без пробілу (наприклад, "1Кор")
+        const fullBookPartNoSpace = numberPart ? (numberPart + trimmedBookPart) : trimmedBookPart;
+        const fullBookPartWithSpace = numberPart ? (numberPart + ' ' + trimmedBookPart) : trimmedBookPart;
+        
+        // Перевіряємо мапу скорочень (спочатку без пробілу, потім з пробілом)
+        let fullBookName = bookNameMap[fullBookPartNoSpace] || bookNameMap[fullBookPartWithSpace] || bookNameMap[trimmedBookPart] || fullBookPartWithSpace;
         
         // Якщо є вірш, використовуємо його, інакше встановлюємо "1"
         const versePart = verse || "1";

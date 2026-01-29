@@ -99,8 +99,8 @@ function getSelectedTextWithHtml() {
 // Обробка сторінки - знаходження біблійних посилань (асинхронна, щоб не блокувати UI)
 function processPage() {
     // Простий regex для розпізнавання біблійних посилань
-    // Захоплює "1 Петра", "2 Тимофія" тощо
-    const bibleRegex = /(\d+\s+)?([А-Яа-яІЇЄҐ][А-Яа-яІЇЄҐіїєґ'\s]{1,25}?)(?:\s*[\.\:]\s*|\s+)(\d+)(?:[\.\:](\d+(?:[\-\–]\d+)?))?/g;
+    // Захоплює "1 Петра", "2 Тимофія", "1Кор", "2Кор" тощо
+    const bibleRegex = /(\d+\s*)?([А-Яа-яІЇЄҐ][А-Яа-яІЇЄҐіїєґ'\s]{1,25}?)(?:\s*[\.\:]\s*|\s+)(\d+)(?:[\.\:](\d+(?:[\-\–]\d+)?))?/g;
     
     // Функція для обробки текстового вузла
     function processTextNode(node) {
@@ -148,9 +148,11 @@ function processPage() {
                 fragment.appendChild(document.createTextNode(text.substring(lastIndex, index)));
             }
             
-            // Формуємо повну назву книги
-            const fullBookPart = numberPrefix ? (numberPrefix + ' ' + bookPart) : bookPart;
-            const fullBookName = bookNameMap[fullBookPart] || bookNameMap[bookPart] || fullBookPart;
+            // Формуємо повну назву книги: спочатку перевіряємо варіант без пробілу (наприклад, "1Кор")
+            const numberPart = numberPrefix ? numberPrefix.trim() : '';
+            const fullBookPartNoSpace = numberPart ? (numberPart + bookPart) : bookPart;
+            const fullBookPartWithSpace = numberPart ? (numberPart + ' ' + bookPart) : bookPart;
+            const fullBookName = bookNameMap[fullBookPartNoSpace] || bookNameMap[fullBookPartWithSpace] || bookNameMap[bookPart] || fullBookPartWithSpace;
             const reference = `${fullBookName} ${chapter}:${verse}`;
             
             // Створюємо посилання
@@ -307,7 +309,7 @@ function getVerseText(reference) {
     
     // Перевіряємо точне збігання
     if (bibleData[normalizedRef]) {
-        return normalizedRef + '\n' + bibleData[normalizedRef];
+        return normalizedRef + ' ' + bibleData[normalizedRef];
     }
     
     // Обробляємо діапазони (наприклад, "Буття 1:3-5")
@@ -318,7 +320,7 @@ function getVerseText(reference) {
         for (let v = parseInt(startVerse); v <= parseInt(endVerse); v++) {
             const verseText = findVerseTextSimpleContent(book, chapter, v);
             if (verseText) {
-                verses.push(`${book} ${chapter}:${v}\n${verseText}`);
+                verses.push(`${book} ${chapter}:${v} ` + verseText);
             }
         }
         if (verses.length > 0) {
@@ -326,7 +328,7 @@ function getVerseText(reference) {
         }
     }
     
-    // Якщо це один вірш
+    // Якщо це один вірш, показуємо тільки його
     const singleMatch = normalizedRef.match(/^(.+?)\s+(\d+):(\d+)$/);
     if (singleMatch) {
         const [, book, chapter, verse] = singleMatch;
@@ -335,23 +337,8 @@ function getVerseText(reference) {
         let verseText = findVerseTextSimpleContent(book, chapter, verseNum);
         
         if (verseText) {
-            // Показуємо поточний вірш та наступні (до 5 віршів загалом)
-            const verses = [`${book} ${chapter}:${verse}\n${verseText}`];
-            let nextVerse = verseNum + 1;
-            let count = 0;
-            
-            while (count < 4 && nextVerse <= 200) {
-                const nextVerseText = findVerseTextSimpleContent(book, chapter, nextVerse);
-                if (nextVerseText) {
-                    verses.push(`${book} ${chapter}:${nextVerse}\n${nextVerseText}`);
-                    count++;
-                    nextVerse++;
-                } else {
-                    break;
-                }
-            }
-            
-            return verses.join('\n\n');
+            // Показуємо посилання на початку, потім текст
+            return `${book} ${chapter}:${verse} ` + verseText;
         }
     }
     
