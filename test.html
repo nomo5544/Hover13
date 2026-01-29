@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест біблійних посилань</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .status.pass {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status.fail {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .bible-link-hover {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест біблійних посилань</h1>
+    
+    <div class="test-section">
+        <h3>Тестовий текст з біблійними посиланнями:</h3>
+        <p id="test-text">
+            Буття 1:1 сказано про створення світу. Також важливим є вірш Матвія 5:3, який говорить про блаженство.
+            Апостол Павло у своєму посланні до Римлян 8:28 нагадує нам про Божу любов. У 1 Коринтян 13:4 описується, що таке любов.
+            Іноді зустрічаються посилання з крапкою замість двокрапки: Буття 2.7 або Псалми 23.1. 
+            Також можна побачити формат з двокрапкою: Івана 3:16.
+            Діапазони також працюють: Буття 4:3-7.
+        </p>
+    </div>
+    
+    <div class="test-section">
+        <h3>Результати тестування:</h3>
+        <div id="test-results"></div>
+    </div>
+    
+    <script>
+        // Список очікуваних посилань
+        const expectedLinks = [
+            { text: 'Буття 1:1', book: 'Буття', chapter: '1', verse: '1' },
+            { text: 'Матвія 5:3', book: 'Матвія', chapter: '5', verse: '3' },
+            { text: 'Римлян 8:28', book: 'Римлян', chapter: '8', verse: '28' },
+            { text: '1 Коринтян 13:4', book: '1 Коринтян', chapter: '13', verse: '4' },
+            { text: 'Буття 2.7', book: 'Буття', chapter: '2', verse: '7' },
+            { text: 'Псалми 23.1', book: 'Псалми', chapter: '23', verse: '1' },
+            { text: 'Івана 3:16', book: 'Івана', chapter: '3', verse: '16' },
+            { text: 'Буття 4:3-7', book: 'Буття', chapter: '4', verse: '3-7' }
+        ];
+        
+        function runTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '';
+            
+            let passed = 0;
+            let failed = 0;
+            
+            // Чекаємо трохи, щоб content.js встиг обробити сторінку
+            setTimeout(() => {
+                console.log('Початок тестування...');
+                console.log('Знайдено посилань:', document.querySelectorAll('.bible-link-hover').length);
+                expectedLinks.forEach((expected, index) => {
+                    const testText = document.getElementById('test-text');
+                    const text = testText.textContent || testText.innerText;
+                    
+                    // Перевіряємо, чи текст містить посилання
+                    const hasText = text.includes(expected.text);
+                    
+                    // Перевіряємо, чи є елемент з класом bible-link-hover
+                    const links = document.querySelectorAll('.bible-link-hover');
+                    let foundLink = false;
+                    let linkElement = null;
+                    
+                    links.forEach(link => {
+                        if (link.textContent.includes(expected.text) || 
+                            link.getAttribute('data-reference')?.includes(expected.book)) {
+                            foundLink = true;
+                            linkElement = link;
+                        }
+                    });
+                    
+                    const testPassed = hasText && foundLink;
+                    
+                    if (testPassed) {
+                        passed++;
+                    } else {
+                        failed++;
+                    }
+                    
+                    const statusDiv = document.createElement('div');
+                    statusDiv.className = `status ${testPassed ? 'pass' : 'fail'}`;
+                    statusDiv.innerHTML = `
+                        <strong>Тест ${index + 1}:</strong> ${expected.text}<br>
+                        Текст знайдено: ${hasText ? '✓' : '✗'}<br>
+                        Посилання знайдено: ${foundLink ? '✓' : '✗'}<br>
+                        ${linkElement ? `Reference: ${linkElement.getAttribute('data-reference')}` : ''}
+                    `;
+                    resultsDiv.appendChild(statusDiv);
+                });
+                
+                // Підсумок
+                const summaryDiv = document.createElement('div');
+                summaryDiv.className = `status ${failed === 0 ? 'pass' : 'fail'}`;
+                summaryDiv.innerHTML = `
+                    <strong>Підсумок:</strong> ${passed} пройдено, ${failed} не пройдено з ${expectedLinks.length} тестів
+                `;
+                resultsDiv.appendChild(summaryDiv);
+            }, 2000);
+        }
+        
+        // Запускаємо тести після завантаження сторінки
+        window.addEventListener('load', runTests);
+        
+        // Також можна запустити вручну
+        setTimeout(runTests, 3000);
+    </script>
+</body>
+</html>
